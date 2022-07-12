@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw
 import random
 import math
-input_img = Image.open("circles.webp")
+input_img = Image.open("circles.png")
 input_img = input_img.convert("L")  # 흑백으로 전환
 rows = input_img.size[0]
 cols = input_img.size[1]

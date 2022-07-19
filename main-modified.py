@@ -1,5 +1,3 @@
-from tkinter.ttk import Radiobutton
-from turtle import radians
 from PIL import Image, ImageDraw
 import random
 import math
@@ -19,30 +17,21 @@ input_img = Image.open(dir_img)
 input_img = input_img.convert("L")  # 흑백으로 전환
 rows = input_img.size[0]
 cols = input_img.size[1]
-
-
-angle = 3  # 기준 중심각
+standard_angle = 3  # 기준 중심각
 distance = 3  # 호간 거리
-
-
 rad = math.ceil(math.sqrt(rows ** 2 + cols ** 2) / 2 )  #사진 정중앙에서 꼭짓점 거리
 
 output_img = Image.new("L", (2 * rad, 2 * rad), color=255) #output_img 크기 rad만큼 늘리기
 box = tuple((n - o) // 2 for n, o in zip(output_img.size, input_img.size))
 output_img.paste(input_img, box)
-
-print(rad, output_img.size)
-
 drawer = ImageDraw.Draw(output_img)  # 호 그려주는 거
-
-# distance = int( input("distance>>> "))
 
 stresses = [25, 145, 325]  # 살짝 밝아지는 각도들
 stress_range = 15  # 밝아지는 범위
 
 for radius in range(0, math.ceil(rad), distance):
     # 반지름 길이가 길어질수록 중심각이 커지도록 함 -> 중간에는 정밀한데 가장자리는 안그럼
-    angle = 3
+    angle = standard_angle
     if radius > rad / 5 * 2:
         angle = 2 * angle
     if radius > rad / 15 * 8:
@@ -70,29 +59,7 @@ for radius in range(0, math.ceil(rad), distance):
 
         # 호 그리기
         drawer.arc(((rad - radius, rad - radius), (rad + radius, rad + radius)),
-                   start=segment, end=segment + angle , fill=color, width=4)
-#+distance+1
-#(255-color)//120
-# 이 위치에서
-# output_img.show("Before Filling Whites")
-# 를 실행해보자.
-# 이상한 줄무늬 탄생
-# 이유: 비트맵이기 때문에 호와 호 사이의 공간에 특정한 형태의 빈칸이 만들어짐 -> 이어지면서 무늬 형성
-# -> 고치기 위해 고생함!!
-
-# 흰색 칸들을 상하좌우의 칸의 색의 평균으로 채워넣기
-'''
-pixel_map = output_img.load()
-for row in range(1, rows-1):
-    for col in range(1, cols-1):
-        if pixel_map[row, col] == 255:
-            up = pixel_map[row-1, col]
-            down = pixel_map[row+1, col]
-            left = pixel_map[row, col-1]
-            right = pixel_map[row, col+1]
-            pixel_map[row, col] = (up + down + left + right) // 4
-'''
-
+                   start=segment, end=segment + angle , fill=color, width=(255-color)//120+distance+1)
 
 output_img.show()
 output_img.save("circles in circles.png")
